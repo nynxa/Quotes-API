@@ -8,13 +8,12 @@ import datetime
 import mysql.connector
 
 quotequery = "SELECT rowid, quote_text, author FROM newest_quotes WHERE used IS NULL ORDER BY random() LIMIT 1"
-findrow = "select rowid, quote_text, author from newest_quotes where rowid = 99"
+quotequery_rowid = "SELECT rowid, quote_text, author FROM newest_quotes WHERE rowid = ?"
 TABLE_NAME = 'newest_quotes'
-DATABASE_PATH = "/Library/Scripts/Ninxa Scripts/Get_Quotes/Show-Quotes/local/myQuotes.db" 
+DATABASE_PATH = "/Library/Scripts/Ninxa Scripts/Get_Quotes/Show-Quotes/local/myQuotes.db"
 DB_PASSWORD = ""
 
 mysql = mysql.connector().connect(user='nynxa', password='', host='', database='')
-
 if len(sys.argv) > 0:
     for arg in sys.argv:
         print(f"arg = {arg}")
@@ -81,13 +80,12 @@ def update_liked(rowid):
 def update_disliked(rowid):
     print(f"starting update_used -> rowid = {rowid}")
     for arg in sys.argv:
-        if (len(sys.argv) <= 2):
-            print(f"you didnt pass a rowid")
-            for arg in sys.argv:
-                print(f"arg from update_user = {arg}")
-        else:
-            rowid = sys.argv[2]
-
+            print(f"arg from update_disliked = {arg}")
+    if len(sys.argv) <= 2:
+        print(f"you didnt pass a rowid")
+    else:
+        rowid = sys.argv[2]
+            
     con = sqlite3.connect(
         DATABASE_PATH)
     update = """UPDATE newest_quotes SET liked = 0, used = 1 WHERE rowid = ?"""
@@ -100,6 +98,41 @@ def update_disliked(rowid):
     applescript_command = f"""osascript -e 'tell application "Keyboard Maestro Engine" to setvariable "lastUsedQuoteRow" to "{rowid}"'"""
 
     subprocess.run(applescript_command, shell=True)
+
+def pull_quote_by_rowid(rowid):
+    print(f"starting pull quote by rowid, rowid = {rowid}")
+    for arg in sys.argv:
+        print(f"arg from pull_quote_by_rowid = {arg}")
+    if len(sys.argv) <= 2:
+        print(f"you didnt pass a rowid!")
+    else:
+        rowid = sys.argv[2]
+        con = sqlite3.connect(DATABASE_PATH)
+
+    cur = con.cursor()
+    try:
+        cur.execute(quotequery_rowid, (rowid,))
+        row = cur.fetchone()
+        print(f"quote by rowid returned {row}")
+
+        # for col in row:
+        #     quoteDict = {
+        #         "rowid": col[0],
+        #         "quote": col[1],
+        #         "author": col[2]
+        #     }
+        
+        applescript_command = f"""osascript -e 'tell application "Keyboard Maestro Engine" to setvariable "quote_text" to "{row[0]}"
+        tell application "Keyboard Maestro Engine" to setvariable "quote_author" to "{row[1]}"
+        tell application "Keyboard Maestro Engine" to setvariable "quote_rowid" to "{row[2]}"'"""
+
+        subprocess.run(applescript_command, shell=True)
+
+    except sqlite3.Error as error:
+        print("error getting quote by rowid ", error)
+    finally:
+        cur.close()
+        con.close()
 
 
 if __name__ == "__main__":
