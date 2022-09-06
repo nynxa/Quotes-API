@@ -1,21 +1,18 @@
 {
-    "name":"Quotes-API",
-    "description":"Unofficial API for fetching quotes from Goodreads",
-    "keywords":[
-        "quotes",
-        "flask"
-    ],
-    "repository":"https://github.com/CW4RR10R/Quotes-API",
-    "success_url":"/",
-    "buildpacks":[
-        {
-            "url":"heroku/python"
-        }
-    ],
-    "formation":{
-        "web":{
-            "quantity":1,
-            "size":"free"
-        }
+  "name": "Quotes-API",
+  "description": "Unofficial API for fetching quotes from Goodreads with added functionality",
+  "keywords": ["quotes", "flask"],
+  "repository": "https://github.com/nynxa/Get_Quotes",
+  "success_url": "/",
+  "buildpacks": [
+    {
+      "url": "heroku/python"
     }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
 }

@@ -1,13 +1,7 @@
 # Quotes-API
 > Unofficial API for fetching quotes from Goodreads
 
-
-[![cw projects](https://img.shields.io/badge/cwprojects-%E2%9D%A4%EF%B8%8F-green?style=style=flat-square&logo=telegram)](https://t.me/cwprojects/)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-
-### Demo
-https://quotes.cwprojects.live/random
 
 [API docs](https://github.com/CW4RR10R/Quotes-API/wiki/API-Docs)
 
