@@ -1,5 +1,5 @@
 # Quotes-API
-> Unofficial API for fetching quotes from Goodreads
+> Unofficial API for fetching quotes from Goodreads. Originally created by CW4RRIOR, modified by nynxa.
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -20,16 +20,11 @@
   "text": "\u201cBeing deeply loved by someone gives you strength, while loving someone deeply gives you courage.\u201d    \u2015      Lao Tzu"
 }
 ```
-### Deploy
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/CW4RR10R/Quotes-API/tree/main)
-
-[![Run on Repl.it](https://repl.it/badge/github/CW4RR10R/Quotes-API)](https://repl.it/github/CW4RR10R/Quotes-API)
 
 ### Installation
 * Cloning the repository
 ``` bash
-git clone https://github.com/CW4RR10R/Quotes-API
+git clone https://github.com/nynxa/Quotes-API
 cd Quotes-API
 ```
 

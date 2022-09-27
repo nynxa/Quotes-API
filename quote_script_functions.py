@@ -1,28 +1,26 @@
-#! /Library/Frameworks/Python.framework/Versions/3.10/bin/python3
-# Virtual Env python - /Quotes-API/quotesapi/bin/python3.10
-# Other python location - /usr/local/bin python3
+#! "/Library/Scripts/Ninxa Scripts/Get_Quotes/Quotes-API/quotesapi/bin/python3"
+
 import json
 import sqlite3
 import subprocess
 import sys
-import logging
-# import datetime
-# import mysql.connector
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-quotequery = "SELECT rowid, quote_text, author FROM newest_quotes WHERE used IS NULL ORDER BY random() LIMIT 1"
-quotequery_rowid = "SELECT rowid, quote_text, author FROM newest_quotes WHERE rowid = ?"
-TABLE_NAME = 'newest_quotes'
-DATABASE_PATH = "/Library/Scripts/Ninxa Scripts/Get_Quotes/Show-Quotes/local/myQuotes.db"
+TABLE_NAME = os.getenv('TABLE_NAME')
+DATABASE_PATH = os.getenv('DATABASE_PATH')
 
-# mysql = mysql.connector().connect(user='nynxa', password='', host='', database='')
+new_quote_query = f"SELECT rowid, quote_text, author FROM {TABLE_NAME} WHERE used IS NULL ORDER BY random() LIMIT 1"
+quotequery_rowid = f"SELECT rowid, quote_text, author FROM {TABLE_NAME} WHERE rowid = ?"
+liked_quote_query = f"SELECT rowid, quote_text, author FROM {TABLE_NAME} WHERE liked = 1 AND used = 1 ORDER BY random() LIMIT 1"
 
-def pull_quote(rowid=False): # Pass rowid to pull specific quote, or leave blank to get a random quote
+def pull_new_quote(rowid=False): # Pass rowid to pull specific quote, or leave blank to get a random quote
     if len(sys.argv) > 2:
         query = quotequery_rowid
         rowid = sys.argv[2]
     else:
-        query = quotequery
-    # print("starting pull_quote") # Avoid print statements
+        query = new_quote_query
     con = sqlite3.connect(DATABASE_PATH)
     cur = con.cursor()
     try:
@@ -50,11 +48,44 @@ def pull_quote(rowid=False): # Pass rowid to pull specific quote, or leave blank
         if con:
             con.close()
 
-    # applescript_command = f"osascript -e 'tell application \"Keyboard Maestro Engine\" to setvariable \"quote_json\" to \"{quote_dict}\"'"
-    # tell application "Keyboard Maestro Engine" to setvariable "quote_author" to "{author}"
-    # tell application "Keyboard Maestro Engine" to setvariable "quote_rowid" to "{new_rowid}"'
+    quote_json = json.dumps(quote_dict)
+    print(quote_json)
 
-    # subprocess.run(applescript_command, shell=True)
+# Pass rowid to pull specific quote, or leave blank to get a random quote
+def pull_liked_quote(rowid=False): 
+    if len(sys.argv) > 2:
+        query = quotequery_rowid
+        rowid = sys.argv[2]
+    else:
+        query = liked_quote_query
+    # print("starting pull_new_quote") # Avoid print statements
+    con = sqlite3.connect(DATABASE_PATH)
+    cur = con.cursor()
+    try:
+        if rowid == False:
+            cur.execute(query)
+        else:
+            cur.execute(query, (rowid, ))
+        row = cur.fetchone()
+
+        if len(row) > 1:
+            quote_dict = {
+                "rowid": row[0],
+                "quote": row[1],
+                "author": row[2]
+                }
+        else:
+            return print("No rows found!")
+
+        cur.close()
+
+    except sqlite3.Error as error:
+        print("Unable to update sqlite", error)
+
+    finally:
+        if con:
+            con.close()
+
     quote_json = json.dumps(quote_dict)
     print(quote_json)
 
@@ -70,7 +101,7 @@ def update_liked(rowid):
 
     con = sqlite3.connect(
         DATABASE_PATH)
-    update = "UPDATE newest_quotes SET liked = 1, used = 1 WHERE rowid = ?"
+    update = "UPDATE newest_quotes SET liked = 1, used = used + 1 WHERE rowid = ?"
     cur = con.cursor()
     cur.execute(update, (rowid,))
     con.commit()
@@ -94,7 +125,7 @@ def update_disliked(rowid):
             
     con = sqlite3.connect(
         DATABASE_PATH)
-    update = """UPDATE newest_quotes SET liked = 0, used = 1 WHERE rowid = ?"""
+    update = """UPDATE newest_quotes SET liked = 0, used = used + 1 WHERE rowid = ?"""
     cur = con.cursor()
     cur.execute(update, (rowid,))
     con.commit()

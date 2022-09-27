@@ -4,11 +4,6 @@
   "keywords": ["quotes", "flask"],
   "repository": "https://github.com/nynxa/Get_Quotes",
   "success_url": "/",
-  "buildpacks": [
-    {
-      "url": "heroku/python"
-    }
-  ],
   "formation": {
     "web": {
       "quantity": 1,

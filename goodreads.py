@@ -12,13 +12,10 @@ class GoodReads:
     def extract(url):
         results = []
         soup = BeautifulSoup(requests.get(url).text, "html.parser")
-        # nextpage = soup.find("a", {"class": "next_page"})
         nextpage = soup.find("a", class_="next_page")
         lastpage = nextpage.find_previous_sibling("a").text
         for quote in soup.find_all("div", class_= "quote"):
             squote = {}
-            # squote['text']= quote.find("div", {"class": "quoteText"}).text.replace('\n',' ').rsplit("\u2015", 1)[0].strip()
-            # squote['author'] = quote.find("span", {"class": "authorOrTitle"}).text.replace('\n',' ').strip()
             squote['text'] = quote.find("div", class_ = "quoteText").text.replace('\n', ' ').rsplit("\u2015", 1)[0].strip()
             author_title = quote.find_all("span", "a", class_ = "authorOrTitle", limit = 2)
             squote['author'] = author_title[0].text.replace('\n', ' ').strip()

@@ -7,14 +7,17 @@ api = Flask(__name__)
 def index():
     res = {
       'status': 200,
-      'about': 'Quotes api by W4RR10R',
+      'about': 'Quotes api by nynxa (forked from github.com/W4RR10R/Quotes-API',
       'usage': [
          '/random',
+         '/search/query',
          '/search/query/num_of_pages',
          '/search/query/num_of_pages/start_page'
        ],
        'options': [
-           'if num_of_pages = -1, will scrape all pages'
+           'num_of_pages (optional) defaults to 1',
+           'if num_of_pages = -1, will scrape all pages',
+           'query can be either a keyword or the author code (found in author profile URL)'
        ]
     }
     return jsonify(res)
